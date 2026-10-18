@@ -12,8 +12,11 @@ import java.util.List;
 @RestController
 public class TrailController {
     private final TrailRepository trailRepository;
-    public TrailController(TrailRepository trailRepository) {
+    private final CruxRepository cruxRepository;
+
+    public TrailController(TrailRepository trailRepository, CruxRepository cruxRepository) {
         this.trailRepository = trailRepository;
+        this.cruxRepository = cruxRepository;
     }
     @GetMapping("/api/trails")
     public List<Trail> findAll(
@@ -38,8 +41,9 @@ public class TrailController {
     }
 
     @GetMapping("/api/trails/{id}")
-    public Trail findById(@PathVariable Long id) {
-        return trailRepository.findById(id)
+    public TrailDetails findById(@PathVariable Long id) {
+        Trail trail = trailRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return TrailDetails.of(trail, cruxRepository.findByTrailIdOrderByPositionAsc(id));
     }
 }

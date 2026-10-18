@@ -13,6 +13,10 @@
     <article id="card" class="card">
         <p class="empty">Wczytywanie szlaku…</p>
     </article>
+    <section id="cruxes" class="cruxes" hidden>
+        <h2>Cruxy</h2>
+        <ul id="crux-list"></ul>
+    </section>
 </main>
 <script>
     const card = document.querySelector("#card");
@@ -25,7 +29,10 @@
             }
             return response.json();
         })
-        .then(showTrail)
+        .then(function (trail) {
+            showTrail(trail);
+            showCruxes(trail.cruxes);
+        })
         .catch(showMissing);
 
     function showTrail(trail) {
@@ -48,6 +55,22 @@
                 <div><dt>Kondycja</dt><dd>${formatNumber(trail.condition)}</dd></div>
             </dl>
         `;
+    }
+
+    function showCruxes(cruxes) {
+        if (!cruxes) {
+            return;
+        }
+        const section = document.querySelector("#cruxes");
+        const list = document.querySelector("#crux-list");
+        section.hidden = false;
+        if (cruxes.length === 0) {
+            list.innerHTML = "<li>Brak opisanych cruxów.</li>";
+            return;
+        }
+        list.innerHTML = cruxes.map(function (crux) {
+            return `<li><a href="/cruxes/${crux.id}">${escapeHtml(crux.name)}</a><span>${escapeHtml(crux.description)}</span></li>`;
+        }).join("");
     }
 
     function showMissing() {

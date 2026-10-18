@@ -14,4 +14,9 @@ public class TrailPageController {
 	public String trail() {
 		return "forward:/trail.html";
 	}
+
+	@GetMapping("/cruxes/{cruxId}")
+	public String crux() {
+		return "forward:/crux.html";
+	}
 }

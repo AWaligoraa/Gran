@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Crux</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<main class="page">
+    <p class="mark">Tatry Polskie</p>
+    <p class="back"><a id="back" href="/trails">Wróć do szlaku</a></p>
+    <article id="card" class="card">
+        <p class="empty">Wczytywanie cruxa…</p>
+    </article>
+</main>
+<script>
+    const card = document.querySelector("#card");
+    const cruxId = location.pathname.split("/").filter(Boolean).pop();
+
+    fetch("/api/cruxes/" + cruxId)
+        .then(function (response) {
+            if (!response.ok) {
+                throw new Error("missing");
+            }
+            return response.json();
+        })
+        .then(showCrux)
+        .catch(showMissing);
+
+    function showCrux(crux) {
+        document.title = crux.name;
+        document.querySelector("#back").href = "/trails/" + crux.trail.id;
+        card.innerHTML = `
+            <h2>${escapeHtml(crux.name)}</h2>
+            <p class="position">Odcinek ${crux.position} na szlaku ${escapeHtml(crux.trail.name)}</p>
+            <hr>
+            <p class="description">${escapeHtml(crux.description)}</p>
+        `;
+    }
+
+    function showMissing() {
+        document.title = "Nie ma takiego cruxa";
+        card.innerHTML = '<p class="empty">Nie ma cruxa o tym numerze.</p>';
+    }
+
+    function escapeHtml(value) {
+        return String(value)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;");
+    }
+</script>
+</body>
+</html>
