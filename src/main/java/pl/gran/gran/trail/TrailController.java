@@ -1,8 +1,11 @@
 package pl.gran.gran.trail;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -32,5 +35,11 @@ public class TrailController {
                 minCondition == null ? 0 : minCondition,
                 maxCondition == null ? 5 : maxCondition
         );
+    }
+
+    @GetMapping("/api/trails/{id}")
+    public Trail findById(@PathVariable Long id) {
+        return trailRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 }

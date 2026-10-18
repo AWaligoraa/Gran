@@ -26,6 +26,23 @@ body {
     font-size: 0.78rem;
 }
 
+.back {
+    margin: 0 0 16px;
+}
+
+.back a,
+.card h2 a {
+    color: inherit;
+}
+
+.card h2 a {
+    text-decoration: none;
+}
+
+.card h2 a:hover {
+    text-decoration: underline;
+}
+
 .filters {
     border: 2px solid #1c1915;
     background: #fff;
