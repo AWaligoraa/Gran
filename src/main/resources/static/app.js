@@ -98,7 +98,7 @@ function render() {
 
     const trail = trails[index];
     card.innerHTML = `
-        <h2>${escapeHtml(trail.name)}</h2>
+        <h2><a href="/trails/${trail.id}">${escapeHtml(trail.name)}</a></h2>
         <div class="photo" aria-hidden="true">
             <svg viewBox="0 0 640 220" preserveAspectRatio="xMidYMax slice">
                 <rect width="640" height="220" fill="#d7e0db"/>
