@@ -34,6 +34,7 @@
         card.innerHTML = `
             <h2>${escapeHtml(crux.name)}</h2>
             <p class="position">Odcinek ${crux.position} na szlaku ${escapeHtml(crux.trail.name)}</p>
+            ${videoHtml(crux.youtubeId)}
             <hr>
             <p class="description">${escapeHtml(crux.description)}</p>
         `;
@@ -42,6 +43,13 @@
     function showMissing() {
         document.title = "Nie ma takiego cruxa";
         card.innerHTML = '<p class="empty">Nie ma cruxa o tym numerze.</p>';
+    }
+
+    function videoHtml(youtubeId) {
+        if (!/^[A-Za-z0-9_-]{6,20}$/.test(youtubeId || "")) {
+            return "";
+        }
+        return `<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/${youtubeId}" title="Przejście odcinka" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>`;
     }
 
     function escapeHtml(value) {
