@@ -26,6 +26,8 @@ public class Crux {
 
     private String description;
 
+    private String youtubeId;
+
     protected Crux() {
     }
 
@@ -39,6 +41,10 @@ public class Crux {
 
     public String getName() {
         return name;
+    }
+
+    public String getYoutubeId(){
+        return youtubeId;
     }
 
     public int getPosition() {
