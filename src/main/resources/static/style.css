@@ -26,6 +26,15 @@ body {
     font-size: 0.78rem;
 }
 
+.mark a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.mark a:hover {
+    text-decoration: underline;
+}
+
 .back {
     margin: 0 0 16px;
 }
