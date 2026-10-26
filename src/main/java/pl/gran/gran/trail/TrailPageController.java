@@ -6,6 +6,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class TrailPageController {
 
+	@GetMapping("/")
+	public String home() {
+		return "forward:/home.html";
+	}
+
 	@GetMapping({"/trails", "/trails/"})
 	public String page() {
 		return "forward:/index.html";

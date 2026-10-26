@@ -1,0 +1,404 @@
+:root {
+    color: #1a2420;
+    background: #f4f1eb;
+    font-family: "Segoe UI", sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+}
+
+a {
+    color: inherit;
+}
+
+.top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    width: min(1120px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 22px 0;
+}
+
+.brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #1b4332;
+    font-weight: 700;
+    font-size: 1.25rem;
+    text-decoration: none;
+}
+
+.brand svg {
+    width: 22px;
+    height: 22px;
+    fill: #1b4332;
+}
+
+.top nav {
+    display: flex;
+    gap: 22px;
+}
+
+.top nav a {
+    text-decoration: none;
+    font-size: 0.95rem;
+}
+
+.top nav a:hover {
+    text-decoration: underline;
+}
+
+main {
+    width: min(1120px, calc(100% - 40px));
+    margin: 0 auto;
+    padding-bottom: 72px;
+}
+
+.hero {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 48px;
+    align-items: center;
+    padding: 28px 0 64px;
+}
+
+.hero h1 {
+    margin: 0;
+    font-size: clamp(2.3rem, 4.4vw, 3.5rem);
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+}
+
+.hero-copy > p {
+    max-width: 38rem;
+    margin: 18px 0 0;
+    color: #4d5a54;
+    font-size: 1.08rem;
+    line-height: 1.5;
+}
+
+.button {
+    display: inline-block;
+    margin-top: 26px;
+    border-radius: 999px;
+    background: #1b4332;
+    color: #fff;
+    padding: 13px 22px;
+    text-decoration: none;
+    font-weight: 650;
+}
+
+.button:hover {
+    background: #143528;
+}
+
+.button.light {
+    margin-top: 0;
+    background: #fff;
+    color: #1b4332;
+}
+
+.button.light:hover {
+    background: #e7efe8;
+}
+
+.hero-stats {
+    display: grid;
+    grid-template-columns: repeat(3, max-content);
+    gap: 28px;
+    margin: 34px 0 0;
+}
+
+.hero-stats dd {
+    margin: 0;
+    font-size: 1.7rem;
+    font-weight: 750;
+}
+
+.hero-stats dt {
+    margin: 4px 0 0;
+    color: #5c6762;
+    font-size: 0.86rem;
+}
+
+.hero-visual {
+    position: relative;
+    margin: 0;
+    overflow: hidden;
+    border-radius: 22px;
+    min-height: 320px;
+    background: #c5d0cb;
+}
+
+.hero-visual svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.hero-visual figcaption {
+    position: absolute;
+    left: 16px;
+    bottom: 16px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.92);
+    padding: 8px 12px;
+    font-size: 0.86rem;
+    font-weight: 650;
+}
+
+.eyebrow {
+    margin: 0 0 8px;
+    color: #1b4332;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.layers h2,
+.popular h2,
+.profile h2,
+.closing h2 {
+    margin: 0;
+    font-size: 1.8rem;
+    letter-spacing: -0.02em;
+}
+
+.layer-grid,
+.trail-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-top: 22px;
+}
+
+.layer-grid article,
+.trail-card,
+.profile-card {
+    border: 1px solid #e4dfd6;
+    border-radius: 18px;
+    background: #fff;
+}
+
+.layer-grid article {
+    padding: 22px;
+}
+
+.icon {
+    display: inline-flex;
+    width: 36px;
+    height: 36px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: #e7f0ea;
+    color: #1b4332;
+}
+
+.icon svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+}
+
+.layer-grid h3 {
+    margin: 14px 0 8px;
+    font-size: 1.08rem;
+}
+
+.layer-grid p,
+.muted,
+.trail-start,
+.closing p {
+    margin: 0;
+    color: #4d5a54;
+    line-height: 1.5;
+}
+
+.popular,
+.profile {
+    margin-top: 64px;
+}
+
+.section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 16px;
+}
+
+.section-head a {
+    color: #1b4332;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.section-head a:hover {
+    text-decoration: underline;
+}
+
+.trail-card {
+    overflow: hidden;
+}
+
+.trail-photo {
+    height: 150px;
+    background: #d5e0da;
+}
+
+.trail-photo svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.trail-body {
+    padding: 16px 18px 18px;
+}
+
+.trail-level {
+    margin: 0;
+    color: #1b4332;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.trail-body h3 {
+    margin: 8px 0 0;
+    font-size: 1.2rem;
+}
+
+.trail-start {
+    margin-top: 6px;
+    font-size: 0.92rem;
+}
+
+.trail-body dl {
+    display: grid;
+    gap: 6px;
+    margin: 14px 0 16px;
+}
+
+.trail-body dl div {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 0.92rem;
+}
+
+.trail-body dt {
+    margin: 0;
+    color: #5c6762;
+}
+
+.trail-body dd {
+    margin: 0;
+    font-weight: 700;
+}
+
+.trail-body > a {
+    color: #1b4332;
+    font-weight: 700;
+}
+
+.profile-card {
+    margin-top: 22px;
+    padding: 18px 18px 20px;
+}
+
+.profile-card svg {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.profile-labels {
+    position: relative;
+    height: 1.4rem;
+    margin: 6px 0 0;
+    color: #1a2420;
+    font-size: 0.92rem;
+    font-weight: 650;
+}
+
+.profile-labels span {
+    position: absolute;
+    transform: translateX(-50%);
+}
+
+.profile-labels span:nth-child(1) {
+    left: 15.8%;
+}
+
+.profile-labels span:nth-child(2) {
+    left: 47.4%;
+}
+
+.profile-labels span:nth-child(3) {
+    left: 71.1%;
+}
+
+.closing {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    margin-top: 64px;
+    border-radius: 22px;
+    background: #1b4332;
+    color: #fff;
+    padding: 32px 36px;
+}
+
+.closing p {
+    margin-top: 8px;
+    color: #d5e3db;
+}
+
+.foot {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    width: min(1120px, calc(100% - 40px));
+    margin: 0 auto;
+    border-top: 1px solid #e4dfd6;
+    padding: 22px 0 32px;
+    color: #5c6762;
+}
+
+@media (max-width: 860px) {
+    .hero,
+    .layer-grid,
+    .trail-grid,
+    .closing,
+    .hero-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .closing,
+    .section-head,
+    .foot,
+    .top {
+        align-items: start;
+        flex-direction: column;
+    }
+
+    .hero {
+        padding-top: 8px;
+    }
+}
