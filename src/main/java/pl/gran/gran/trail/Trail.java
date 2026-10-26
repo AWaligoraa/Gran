@@ -16,6 +16,8 @@ public class Trail  {
     private double exposure;
     private double condition;
 
+    private String mapUrl;
+
     protected Trail() {
     }
 
@@ -55,5 +57,9 @@ public class Trail  {
 
     public double getCondition() {
         return condition;
+    }
+
+    public String getMapUrl() {
+        return mapUrl;
     }
 }

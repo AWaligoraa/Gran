@@ -229,6 +229,23 @@ body {
     color: #5e584f;
 }
 
+.map-link {
+    margin: 22px 0 0;
+}
+
+.map-link a {
+    display: inline-block;
+    border: 2px solid #1c1915;
+    background: #1c1915;
+    color: #fff;
+    padding: 12px 16px;
+    text-decoration: none;
+}
+
+.map-link a:hover {
+    background: #3a342c;
+}
+
 .description {
     margin: 0;
     font-size: 1.15rem;

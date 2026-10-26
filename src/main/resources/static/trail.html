@@ -54,7 +54,15 @@
                 <div><dt>Ekspozycja</dt><dd>${formatNumber(trail.exposure)}</dd></div>
                 <div><dt>Kondycja</dt><dd>${formatNumber(trail.condition)}</dd></div>
             </dl>
+            ${mapLink(trail.mapUrl)}
         `;
+    }
+
+    function mapLink(url) {
+        if (!url) {
+            return "";
+        }
+        return `<p class="map-link"><a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">Zobacz przebieg na mapie</a></p>`;
     }
 
     function showCruxes(cruxes) {

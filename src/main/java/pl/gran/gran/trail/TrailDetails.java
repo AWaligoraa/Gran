@@ -10,6 +10,7 @@ public record TrailDetails(
 		double technicalDifficulty,
 		double exposure,
 		double condition,
+		String mapUrl,
 		List<Crux> cruxes) {
 
 	static TrailDetails of(Trail trail, List<Crux> cruxes) {
@@ -21,6 +22,7 @@ public record TrailDetails(
 				trail.getTechnicalDifficulty(),
 				trail.getExposure(),
 				trail.getCondition(),
+				trail.getMapUrl(),
 				cruxes);
 	}
 
