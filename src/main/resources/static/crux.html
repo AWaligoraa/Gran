@@ -4,18 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Crux</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/crux-page.css">
 </head>
 <body>
-<main class="page">
-    <p class="mark"><a href="/">Grań</a></p>
-    <p class="back"><a id="back" href="/trails">Wróć do szlaku</a></p>
-    <article id="card" class="card">
+<header class="top">
+    <a class="brand" href="/">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18 L9 8 L13 13 L16 9 L21 18 Z"/></svg>
+        Grań
+    </a>
+    <nav>
+        <a href="/trails">Szlaki</a>
+        <a href="/#warstwy">O aplikacji</a>
+    </nav>
+</header>
+<main>
+    <p class="crumb"><a id="back" href="/trails">Szlak</a> / <span id="crumb-name">…</span></p>
+    <article id="card">
         <p class="empty">Wczytywanie cruxa…</p>
     </article>
 </main>
 <script>
     const card = document.querySelector("#card");
+    const crumbName = document.querySelector("#crumb-name");
+    const back = document.querySelector("#back");
     const cruxId = location.pathname.split("/").filter(Boolean).pop();
 
     fetch("/api/cruxes/" + cruxId)
@@ -25,23 +36,69 @@
             }
             return response.json();
         })
-        .then(showCrux)
+        .then(function (crux) {
+            return fetch("/api/trails/" + crux.trail.id)
+                .then(function (response) {
+                    return response.ok ? response.json() : { cruxes: [] };
+                })
+                .then(function (trail) {
+                    showCrux(crux, trail.cruxes || []);
+                });
+        })
         .catch(showMissing);
 
-    function showCrux(crux) {
+    function showCrux(crux, cruxes) {
         document.title = crux.name;
-        document.querySelector("#back").href = "/trails/" + crux.trail.id;
+        crumbName.textContent = crux.name;
+        back.href = "/trails/" + crux.trail.id;
+        back.textContent = crux.trail.name;
+        const neighbors = findNeighbors(cruxes, crux.id);
         card.innerHTML = `
-            <h2>${escapeHtml(crux.name)}</h2>
-            <p class="position">Odcinek ${crux.position} na szlaku ${escapeHtml(crux.trail.name)}</p>
-            ${videoHtml(crux.youtubeId)}
-            <hr>
+            <div class="photo" aria-hidden="true">
+                <svg viewBox="0 0 640 280" preserveAspectRatio="xMidYMax slice">
+                    <rect width="640" height="280" fill="#d5e0da"/>
+                    <path d="M0 190 L120 90 L200 140 L300 50 L410 130 L500 80 L640 150 L640 280 L0 280 Z" fill="#315246"/>
+                    <path d="M0 230 L160 170 L280 210 L420 160 L540 200 L640 170 L640 280 L0 280 Z" fill="#1d332b"/>
+                </svg>
+                <p>Zdjęcie odcinka</p>
+            </div>
+            <p class="eyebrow">Odcinek ${crux.position}</p>
+            <h1>${escapeHtml(crux.name)}</h1>
+            <p class="where">Na szlaku ${escapeHtml(crux.trail.name)}</p>
             <p class="description">${escapeHtml(crux.description)}</p>
+            ${videoHtml(crux.youtubeId)}
+            <div class="neighbors">
+                ${neighborLink(neighbors.previous, "Poprzedni crux", true)}
+                ${neighborLink(neighbors.next, "Następny crux", false)}
+            </div>
         `;
+    }
+
+    function findNeighbors(cruxes, id) {
+        const sorted = cruxes.slice().sort(function (a, b) {
+            return a.position - b.position;
+        });
+        const index = sorted.findIndex(function (crux) {
+            return String(crux.id) === String(id);
+        });
+        return {
+            previous: index > 0 ? sorted[index - 1] : null,
+            next: index >= 0 && index < sorted.length - 1 ? sorted[index + 1] : null
+        };
+    }
+
+    function neighborLink(crux, label, previous) {
+        const arrow = previous ? "← " : "";
+        const arrowAfter = previous ? "" : " →";
+        if (!crux) {
+            return `<span class="neighbor disabled">${arrow}${label}${arrowAfter}</span>`;
+        }
+        return `<a class="neighbor" href="/cruxes/${crux.id}">${arrow}${label}${arrowAfter}</a>`;
     }
 
     function showMissing() {
         document.title = "Nie ma takiego cruxa";
+        crumbName.textContent = "Brak cruxa";
         card.innerHTML = '<p class="empty">Nie ma cruxa o tym numerze.</p>';
     }
 

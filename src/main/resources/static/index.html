@@ -3,82 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Tatry Polskie</title>
-    <link rel="stylesheet" href="/style.css">
+    <title>Szlaki — Grań</title>
+    <link rel="stylesheet" href="/catalog.css">
 </head>
 <body>
-<main class="page">
-    <p class="mark"><a href="/">Grań</a></p>
+<header class="top">
+    <a class="brand" href="/">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18 L9 8 L13 13 L16 9 L21 18 Z"/></svg>
+        Grań
+    </a>
+    <nav>
+        <a href="/trails" aria-current="page">Szlaki</a>
+        <a href="/#warstwy">O aplikacji</a>
+    </nav>
+</header>
 
-    <section class="filters" aria-labelledby="filters-title">
-        <h1 id="filters-title">Filtry</h1>
+<main>
+    <p class="crumb"><a href="/">Grań</a> / Szlaki</p>
+    <div class="layout">
+        <section class="filters" aria-labelledby="filters-title">
+            <h1 id="filters-title">Filtry</h1>
 
-        <div class="filter">
-            <div class="filter-label">
-                <span>Dystans</span>
-                <strong id="distance-value"></strong>
+            <div class="filter">
+                <div class="filter-label">
+                    <span>Dystans</span>
+                    <strong id="distance-value"></strong>
+                </div>
+                <div class="slider">
+                    <div class="slider-track"></div>
+                    <div class="slider-fill" id="distance-fill"></div>
+                    <input id="min-distance" type="range" min="0" max="50" step="0.5" value="0" aria-label="Minimalny dystans w kilometrach">
+                    <input id="max-distance" type="range" min="0" max="50" step="0.5" value="50" aria-label="Maksymalny dystans w kilometrach">
+                </div>
             </div>
-            <div class="slider">
-                <div class="slider-track"></div>
-                <div class="slider-fill" id="distance-fill"></div>
-                <input id="min-distance" type="range" min="0" max="50" step="0.5" value="0" aria-label="Minimalny dystans w kilometrach">
-                <input id="max-distance" type="range" min="0" max="50" step="0.5" value="50" aria-label="Maksymalny dystans w kilometrach">
-            </div>
-        </div>
 
-        <div class="filter">
-            <div class="filter-label">
-                <span>Trudność techniczna</span>
-                <strong id="technical-value"></strong>
+            <div class="filter">
+                <div class="filter-label">
+                    <span>Trudność techniczna</span>
+                    <strong id="technical-value"></strong>
+                </div>
+                <div class="slider">
+                    <div class="slider-track"></div>
+                    <div class="slider-fill" id="technical-fill"></div>
+                    <input id="min-technical" type="range" min="1" max="5" step="0.5" value="1" aria-label="Minimalna trudność techniczna">
+                    <input id="max-technical" type="range" min="1" max="5" step="0.5" value="5" aria-label="Maksymalna trudność techniczna">
+                </div>
             </div>
-            <div class="slider">
-                <div class="slider-track"></div>
-                <div class="slider-fill" id="technical-fill"></div>
-                <input id="min-technical" type="range" min="1" max="5" step="0.5" value="1" aria-label="Minimalna trudność techniczna">
-                <input id="max-technical" type="range" min="1" max="5" step="0.5" value="5" aria-label="Maksymalna trudność techniczna">
+
+            <div class="filter">
+                <div class="filter-label">
+                    <span>Ekspozycja</span>
+                    <strong id="exposure-value"></strong>
+                </div>
+                <div class="slider">
+                    <div class="slider-track"></div>
+                    <div class="slider-fill" id="exposure-fill"></div>
+                    <input id="min-exposure" type="range" min="1" max="5" step="0.5" value="1" aria-label="Minimalna ekspozycja">
+                    <input id="max-exposure" type="range" min="1" max="5" step="0.5" value="5" aria-label="Maksymalna ekspozycja">
+                </div>
             </div>
-        </div>
 
-        <div class="filter">
-            <div class="filter-label">
-                <span>Ekspozycja</span>
-                <strong id="exposure-value"></strong>
+            <div class="filter">
+                <div class="filter-label">
+                    <span>Kondycja</span>
+                    <strong id="condition-value"></strong>
+                </div>
+                <div class="slider">
+                    <div class="slider-track"></div>
+                    <div class="slider-fill" id="condition-fill"></div>
+                    <input id="min-condition" type="range" min="1" max="5" step="0.5" value="1" aria-label="Minimalna kondycja">
+                    <input id="max-condition" type="range" min="1" max="5" step="0.5" value="5" aria-label="Maksymalna kondycja">
+                </div>
             </div>
-            <div class="slider">
-                <div class="slider-track"></div>
-                <div class="slider-fill" id="exposure-fill"></div>
-                <input id="min-exposure" type="range" min="1" max="5" step="0.5" value="1" aria-label="Minimalna ekspozycja">
-                <input id="max-exposure" type="range" min="1" max="5" step="0.5" value="5" aria-label="Maksymalna ekspozycja">
+
+            <button id="search" class="search" type="button">Szukaj</button>
+        </section>
+
+        <section class="results" aria-live="polite">
+            <div class="results-head">
+                <h2>Szlaki</h2>
+                <p id="result-count">Wczytywanie…</p>
             </div>
-        </div>
-
-        <div class="filter">
-            <div class="filter-label">
-                <span>Kondycja</span>
-                <strong id="condition-value"></strong>
-            </div>
-            <div class="slider">
-                <div class="slider-track"></div>
-                <div class="slider-fill" id="condition-fill"></div>
-                <input id="min-condition" type="range" min="1" max="5" step="0.5" value="1" aria-label="Minimalna kondycja">
-                <input id="max-condition" type="range" min="1" max="5" step="0.5" value="5" aria-label="Maksymalna kondycja">
-            </div>
-        </div>
-
-        <button id="search" class="search" type="button">Szukaj</button>
-    </section>
-
-    <section class="stage" aria-live="polite">
-        <button id="previous" class="arrow" type="button" aria-label="Poprzedni szlak">
-            <span aria-hidden="true">&#171;</span>
-        </button>
-
-        <article id="card" class="card"></article>
-
-        <button id="next" class="arrow" type="button" aria-label="Następny szlak">
-            <span aria-hidden="true">&#187;</span>
-        </button>
-    </section>
+            <div id="trail-grid" class="trail-grid"></div>
+        </section>
+    </div>
 </main>
 <script src="/app.js"></script>
 </body>

@@ -5,14 +5,9 @@ const filters = [
     ["min-condition", "max-condition", "condition-value", "condition-fill", ""]
 ];
 
-const card = document.querySelector("#card");
-const previousButton = document.querySelector("#previous");
-const nextButton = document.querySelector("#next");
-
+const grid = document.querySelector("#trail-grid");
+const resultCount = document.querySelector("#result-count");
 const searchButton = document.querySelector("#search");
-
-let trails = [];
-let index = 0;
 
 filters.forEach(([minId, maxId, valueId, fillId, suffix]) => {
     const minInput = document.querySelector("#" + minId);
@@ -43,23 +38,7 @@ filters.forEach(([minId, maxId, valueId, fillId, suffix]) => {
 });
 
 loadTrails();
-
 searchButton.addEventListener("click", loadTrails);
-
-previousButton.addEventListener("click", () => show(index - 1));
-nextButton.addEventListener("click", () => show(index + 1));
-
-document.addEventListener("keydown", (event) => {
-    if (event.target.matches("input")) {
-        return;
-    }
-    if (event.key === "ArrowLeft") {
-        show(index - 1);
-    }
-    if (event.key === "ArrowRight") {
-        show(index + 1);
-    }
-});
 
 async function loadTrails() {
     const params = new URLSearchParams({
@@ -73,49 +52,67 @@ async function loadTrails() {
         maxCondition: valueOf("max-condition")
     });
     const response = await fetch("/api/trails?" + params);
-    trails = await response.json();
-    index = 0;
-    render();
+    const trails = await response.json();
+    trails.sort((a, b) => a.id - b.id);
+    render(trails);
 }
 
-function show(nextIndex) {
+function render(trails) {
+    resultCount.textContent = trailsLabel(trails.length);
     if (trails.length === 0) {
+        grid.innerHTML = '<p class="empty">Żaden szlak nie pasuje do tych filtrów.</p>';
         return;
     }
-    index = (nextIndex + trails.length) % trails.length;
-    render();
+    grid.innerHTML = trails.map(trailCard).join("");
 }
 
-function render() {
-    const canBrowse = trails.length > 1;
-    previousButton.disabled = !canBrowse;
-    nextButton.disabled = !canBrowse;
-
-    if (trails.length === 0) {
-        card.innerHTML = '<p class="empty">Żaden szlak nie pasuje do tych filtrów.</p>';
-        return;
-    }
-
-    const trail = trails[index];
-    card.innerHTML = `
-        <h2><a href="/trails/${trail.id}">${escapeHtml(trail.name)}</a></h2>
-        <div class="photo" aria-hidden="true">
-            <svg viewBox="0 0 640 220" preserveAspectRatio="xMidYMax slice">
-                <rect width="640" height="220" fill="#d7e0db"/>
-                <path d="M0 150 L90 92 L150 124 L230 58 L310 118 L390 74 L470 132 L560 86 L640 128 L640 220 L0 220 Z" fill="#31423b"/>
-                <path d="M0 176 L120 142 L210 168 L330 124 L430 166 L530 140 L640 172 L640 220 L0 220 Z" fill="#1d2823"/>
-            </svg>
-        </div>
-        <hr>
-        <dl class="stats">
-            <div><dt>Start</dt><dd>${escapeHtml(trail.startPoint)}</dd></div>
-            <div><dt>Dystans</dt><dd>${formatNumber(trail.distance)} km</dd></div>
-            <div><dt>Trudność techniczna</dt><dd>${formatNumber(trail.technicalDifficulty)}</dd></div>
-            <div><dt>Ekspozycja</dt><dd>${formatNumber(trail.exposure)}</dd></div>
-            <div><dt>Kondycja</dt><dd>${formatNumber(trail.condition)}</dd></div>
-        </dl>
-        <p class="position">${index + 1} z ${trails.length}</p>
+function trailCard(trail) {
+    return `
+        <article class="trail-card">
+            <div class="trail-photo" aria-hidden="true">
+                <svg viewBox="0 0 640 220" preserveAspectRatio="xMidYMax slice">
+                    <rect width="640" height="220" fill="#d5e0da"/>
+                    <path d="M0 150 L100 80 L170 120 L260 48 L350 118 L440 70 L530 130 L640 78 L640 220 L0 220 Z" fill="#315246"/>
+                    <path d="M0 180 L140 140 L250 175 L380 128 L500 168 L640 140 L640 220 L0 220 Z" fill="#1d332b"/>
+                </svg>
+            </div>
+            <div class="trail-body">
+                <p class="trail-level">${level(trail.technicalDifficulty)}</p>
+                <h3><a href="/trails/${trail.id}">${escapeHtml(trail.name)}</a></h3>
+                <p class="trail-start">Start: ${escapeHtml(trail.startPoint)}</p>
+                <dl>
+                    <div><dt>Dystans</dt><dd>${formatNumber(trail.distance)} km</dd></div>
+                    <div><dt>Technika</dt><dd>${formatNumber(trail.technicalDifficulty)} / 5</dd></div>
+                    <div><dt>Ekspozycja</dt><dd>${formatNumber(trail.exposure)} / 5</dd></div>
+                    <div><dt>Kondycja</dt><dd>${formatNumber(trail.condition)} / 5</dd></div>
+                </dl>
+                <a class="details" href="/trails/${trail.id}">Zobacz szczegóły</a>
+            </div>
+        </article>
     `;
+}
+
+function level(value) {
+    const number = Number(value);
+    if (number >= 4) {
+        return "Wymagający";
+    }
+    if (number >= 2.5) {
+        return "Średni";
+    }
+    return "Łatwy";
+}
+
+function trailsLabel(count) {
+    if (count === 1) {
+        return "1 szlak";
+    }
+    const last = count % 10;
+    const lastTwo = count % 100;
+    if (last >= 2 && last <= 4 && (lastTwo < 12 || lastTwo > 14)) {
+        return count + " szlaki";
+    }
+    return count + " szlaków";
 }
 
 function valueOf(id) {
