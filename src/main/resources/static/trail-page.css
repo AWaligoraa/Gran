@@ -1,0 +1,248 @@
+:root {
+    color: #1a2420;
+    background: #f4f1eb;
+    font-family: "Segoe UI", sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+}
+
+a {
+    color: inherit;
+}
+
+.top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    width: min(1120px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 22px 0;
+}
+
+.brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #1b4332;
+    font-weight: 700;
+    font-size: 1.25rem;
+    text-decoration: none;
+}
+
+.brand svg {
+    width: 22px;
+    height: 22px;
+    fill: #1b4332;
+}
+
+.top nav {
+    display: flex;
+    gap: 22px;
+}
+
+.top nav a {
+    text-decoration: none;
+    font-size: 0.95rem;
+}
+
+.top nav a:hover {
+    text-decoration: underline;
+}
+
+main {
+    width: min(1120px, calc(100% - 40px));
+    margin: 0 auto;
+    padding-bottom: 64px;
+}
+
+.crumb {
+    margin: 0 0 18px;
+    color: #5c6762;
+    font-size: 0.92rem;
+}
+
+.crumb a {
+    color: #1b4332;
+    text-decoration: none;
+}
+
+.crumb a:hover {
+    text-decoration: underline;
+}
+
+.trail-head h1 {
+    margin: 8px 0 0;
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    letter-spacing: -0.03em;
+}
+
+.trail-level {
+    margin: 0;
+    color: #1b4332;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.trail-start,
+.muted {
+    margin: 8px 0 0;
+    color: #5c6762;
+    line-height: 1.5;
+}
+
+.facts {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin: 22px 0 0;
+}
+
+.facts div {
+    border: 1px solid #e4dfd6;
+    border-radius: 16px;
+    background: #fff;
+    padding: 14px 16px;
+}
+
+.facts dt {
+    margin: 0;
+    color: #5c6762;
+    font-size: 0.82rem;
+}
+
+.facts dd {
+    margin: 6px 0 0;
+    font-size: 1.25rem;
+    font-weight: 750;
+}
+
+.sheet {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 22px;
+    align-items: start;
+    margin-top: 22px;
+}
+
+.column section {
+    border: 1px solid #e4dfd6;
+    border-radius: 18px;
+    background: #fff;
+    padding: 20px 22px;
+}
+
+.column section + section {
+    margin-top: 18px;
+}
+
+h2 {
+    margin: 0 0 12px;
+    font-size: 1.2rem;
+}
+
+.column p {
+    margin: 0;
+    line-height: 1.5;
+}
+
+.crux-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.crux-list li {
+    padding: 14px 0;
+    border-top: 1px solid #e4dfd6;
+}
+
+.crux-list li:first-child {
+    border-top: 0;
+    padding-top: 0;
+}
+
+.crux-list a {
+    color: #1b4332;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.crux-list a:hover {
+    text-decoration: underline;
+}
+
+.crux-list p {
+    margin-top: 6px;
+    color: #4d5a54;
+}
+
+.button {
+    display: inline-block;
+    margin-top: 16px;
+    border-radius: 999px;
+    background: #1b4332;
+    color: #fff;
+    padding: 12px 18px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.button:hover {
+    background: #143528;
+}
+
+.profile {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.profile-labels {
+    position: relative;
+    height: 1.4rem;
+    margin-top: 6px;
+    font-size: 0.92rem;
+    font-weight: 650;
+}
+
+.profile-labels span {
+    position: absolute;
+    transform: translateX(-50%);
+}
+
+.profile-labels span:nth-child(1) {
+    left: 17.2%;
+}
+
+.profile-labels span:nth-child(2) {
+    left: 54.7%;
+}
+
+.empty {
+    margin: 48px 0;
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+@media (max-width: 860px) {
+    .facts,
+    .sheet,
+    .top {
+        grid-template-columns: 1fr;
+    }
+
+    .top {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

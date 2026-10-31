@@ -4,22 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Szlak</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/trail-page.css">
 </head>
 <body>
-<main class="page">
-    <p class="mark"><a href="/">Grań</a></p>
-    <p class="back"><a href="/trails">Wróć do listy</a></p>
-    <article id="card" class="card">
+<header class="top">
+    <a class="brand" href="/">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18 L9 8 L13 13 L16 9 L21 18 Z"/></svg>
+        Grań
+    </a>
+    <nav>
+        <a href="/trails">Szlaki</a>
+        <a href="/#warstwy">O aplikacji</a>
+    </nav>
+</header>
+<main>
+    <p class="crumb"><a href="/trails">Szlaki</a> / <span id="crumb-name">…</span></p>
+    <article id="card">
         <p class="empty">Wczytywanie szlaku…</p>
     </article>
-    <section id="cruxes" class="cruxes" hidden>
-        <h2>Cruxy</h2>
-        <ul id="crux-list"></ul>
-    </section>
 </main>
 <script>
     const card = document.querySelector("#card");
+    const crumbName = document.querySelector("#crumb-name");
     const id = location.pathname.split("/").filter(Boolean).pop();
 
     fetch("/api/trails/" + id)
@@ -29,61 +35,95 @@
             }
             return response.json();
         })
-        .then(function (trail) {
-            showTrail(trail);
-            showCruxes(trail.cruxes);
-        })
+        .then(showTrail)
         .catch(showMissing);
 
     function showTrail(trail) {
         document.title = trail.name;
+        crumbName.textContent = trail.name;
         card.innerHTML = `
-            <h2>${escapeHtml(trail.name)}</h2>
-            <div class="photo" aria-hidden="true">
-                <svg viewBox="0 0 640 220" preserveAspectRatio="xMidYMax slice">
-                    <rect width="640" height="220" fill="#d7e0db"/>
-                    <path d="M0 150 L90 92 L150 124 L230 58 L310 118 L390 74 L470 132 L560 86 L640 128 L640 220 L0 220 Z" fill="#31423b"/>
-                    <path d="M0 176 L120 142 L210 168 L330 124 L430 166 L530 140 L640 172 L640 220 L0 220 Z" fill="#1d2823"/>
-                </svg>
-            </div>
-            <hr>
-            <dl class="stats">
-                <div><dt>Start</dt><dd>${escapeHtml(trail.startPoint)}</dd></div>
+            <header class="trail-head">
+                <p class="trail-level">${level(trail.technicalDifficulty)}</p>
+                <h1>${escapeHtml(trail.name)}</h1>
+                <p class="trail-start">Start: ${escapeHtml(trail.startPoint)}</p>
+            </header>
+            <dl class="facts">
+                <div><dt>Ekspozycja</dt><dd>${formatNumber(trail.exposure)} / 5</dd></div>
+                <div><dt>Technika</dt><dd>${formatNumber(trail.technicalDifficulty)} / 5</dd></div>
+                <div><dt>Kondycja</dt><dd>${formatNumber(trail.condition)} / 5</dd></div>
                 <div><dt>Dystans</dt><dd>${formatNumber(trail.distance)} km</dd></div>
-                <div><dt>Trudność techniczna</dt><dd>${formatNumber(trail.technicalDifficulty)}</dd></div>
-                <div><dt>Ekspozycja</dt><dd>${formatNumber(trail.exposure)}</dd></div>
-                <div><dt>Kondycja</dt><dd>${formatNumber(trail.condition)}</dd></div>
             </dl>
-            ${mapLink(trail.mapUrl)}
+            <div class="sheet">
+                <div class="column">
+                    <section>
+                        <h2>Charakterystyka</h2>
+                        <p>Opis szlaku dojdzie razem z danymi. Na razie widać skale, listę cruxów i link do przebiegu.</p>
+                    </section>
+                    <section>
+                        <h2>Cruxy</h2>
+                        ${cruxList(trail.cruxes)}
+                    </section>
+                </div>
+                <div class="column">
+                    <section class="panel">
+                        <h2>Przebieg na mapie</h2>
+                        <p>Trasa otwiera się na mapie turystycznej.</p>
+                        ${mapLink(trail.mapUrl)}
+                    </section>
+                    <section class="panel">
+                        <h2>Profil wysokości</h2>
+                        <svg class="profile" viewBox="0 0 640 180" role="img" aria-label="Przykładowy profil wysokości">
+                            <path d="M16 140 L110 124 L190 96 L270 112 L350 48 L450 78 L530 120 L624 108 L624 156 L16 156 Z" fill="#d7e3dc"/>
+                            <path d="M16 140 L110 124 L190 96 L270 112 L350 48 L450 78 L530 120 L624 108" fill="none" stroke="#1b4332" stroke-width="3"/>
+                            <circle cx="110" cy="124" r="5" fill="#1b4332"/>
+                            <circle cx="350" cy="48" r="5" fill="#1b4332"/>
+                        </svg>
+                        <div class="profile-labels">
+                            <span>${escapeHtml(trail.startPoint)}</span>
+                            <span>Grań</span>
+                        </div>
+                    </section>
+                </div>
+            </div>
         `;
+    }
+
+    function cruxList(cruxes) {
+        if (!cruxes || cruxes.length === 0) {
+            return '<p class="muted">Brak opisanych cruxów.</p>';
+        }
+        return `<ol class="crux-list">${cruxes.map(function (crux) {
+            return `
+                <li>
+                    <a href="/cruxes/${crux.id}">${escapeHtml(crux.name)}</a>
+                    <p>${escapeHtml(crux.description)}</p>
+                </li>
+            `;
+        }).join("")}</ol>`;
     }
 
     function mapLink(url) {
         if (!url) {
-            return "";
+            return '<p class="muted">Ten szlak nie ma jeszcze linku do mapy.</p>';
         }
-        return `<p class="map-link"><a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">Zobacz przebieg na mapie</a></p>`;
-    }
-
-    function showCruxes(cruxes) {
-        if (!cruxes) {
-            return;
-        }
-        const section = document.querySelector("#cruxes");
-        const list = document.querySelector("#crux-list");
-        section.hidden = false;
-        if (cruxes.length === 0) {
-            list.innerHTML = "<li>Brak opisanych cruxów.</li>";
-            return;
-        }
-        list.innerHTML = cruxes.map(function (crux) {
-            return `<li><a href="/cruxes/${crux.id}">${escapeHtml(crux.name)}</a><span>${escapeHtml(crux.description)}</span></li>`;
-        }).join("");
+        return `<a class="button" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">Zobacz przebieg na mapie</a>`;
     }
 
     function showMissing() {
         document.title = "Nie ma takiego szlaku";
+        crumbName.textContent = "Brak szlaku";
         card.innerHTML = '<p class="empty">Nie ma szlaku o tym numerze.</p>';
+    }
+
+    function level(value) {
+        const number = Number(value);
+        if (number >= 4) {
+            return "Wymagający";
+        }
+        if (number >= 2.5) {
+            return "Średni";
+        }
+        return "Łatwy";
     }
 
     function formatNumber(value) {
