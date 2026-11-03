@@ -57,6 +57,19 @@ a {
     font-weight: 700;
 }
 
+.top nav a[href="/trails/new"] {
+    border-radius: 999px;
+    background: #1b4332;
+    color: #fff;
+    padding: 8px 14px;
+    font-weight: 700;
+}
+
+.top nav a[href="/trails/new"]:hover {
+    background: #143528;
+    text-decoration: none;
+}
+
 .top nav a:hover {
     text-decoration: underline;
 }
