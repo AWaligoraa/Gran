@@ -15,6 +15,11 @@ public class TrailPageController {
 	public String page() {
 		return "forward:/index.html";
 	}
+	@GetMapping("/trails/new")
+	public String addTrail() {
+		return "forward:/add.html";
+	}
+
 	@GetMapping("/trails/{id}")
 	public String trail() {
 		return "forward:/trail.html";

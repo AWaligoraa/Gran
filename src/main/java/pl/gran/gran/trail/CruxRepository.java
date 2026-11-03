@@ -8,4 +8,6 @@ public interface CruxRepository extends JpaRepository<Crux, Long> {
 
 	List<Crux> findByTrailIdOrderByPositionAsc(Long trailId);
 
+	void deleteByTrailId(Long trailId);
+
 }

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dodaj szlak — Grań</title>
+    <link rel="stylesheet" href="/add.css">
+</head>
+<body>
+<header class="top">
+    <a class="brand" href="/">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18 L9 8 L13 13 L16 9 L21 18 Z"/></svg>
+        Grań
+    </a>
+    <nav>
+        <a href="/trails">Szlaki</a>
+        <a href="/trails/new" aria-current="page">Dodaj szlak</a>
+        <a href="/#warstwy">O aplikacji</a>
+    </nav>
+</header>
+<main>
+    <p class="crumb"><a href="/trails">Szlaki</a> / Dodaj szlak</p>
+    <h1>Dodaj szlak</h1>
+    <form id="trail-form">
+        <div class="photo" aria-hidden="true">
+            <svg viewBox="0 0 640 180" preserveAspectRatio="xMidYMax slice">
+                <rect width="640" height="180" fill="#d5e0da"/>
+                <path d="M0 130 L110 60 L190 100 L280 40 L390 110 L480 70 L640 120 L640 180 L0 180 Z" fill="#315246"/>
+                <path d="M0 155 L150 120 L270 145 L410 115 L530 140 L640 125 L640 180 L0 180 Z" fill="#1d332b"/>
+            </svg>
+            <p>Zdjęcie dojdzie później</p>
+        </div>
+
+        <label>
+            Nazwa
+            <input name="name" required maxlength="200" placeholder="np. Orla Perć">
+        </label>
+        <label>
+            Start
+            <input name="startPoint" required maxlength="200" placeholder="np. Zawrat">
+        </label>
+        <div class="grid">
+            <label>
+                Dystans (km)
+                <input name="distance" type="number" required min="0" max="50" step="0.5" value="5">
+            </label>
+            <label>
+                Trudność techniczna
+                <input name="technicalDifficulty" type="number" required min="1" max="5" step="0.5" value="1">
+            </label>
+            <label>
+                Ekspozycja
+                <input name="exposure" type="number" required min="1" max="5" step="0.5" value="1">
+            </label>
+            <label>
+                Kondycja
+                <input name="condition" type="number" required min="1" max="5" step="0.5" value="1">
+            </label>
+        </div>
+        <label>
+            Link do mapy
+            <input name="mapUrl" type="url" maxlength="300" placeholder="https://mapa-turystyczna.pl/route/...">
+        </label>
+        <p id="form-error" class="error" hidden>Nie udało się zapisać szlaku. Sprawdź pola: skale od 1 do 5, dystans od 0 do 50.</p>
+        <button type="submit">Zapisz szlak</button>
+    </form>
+</main>
+<script>
+    const form = document.querySelector("#trail-form");
+    const error = document.querySelector("#form-error");
+
+    form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        error.hidden = true;
+        const data = new FormData(form);
+        const mapUrl = String(data.get("mapUrl") || "").trim();
+        const body = {
+            name: String(data.get("name") || "").trim(),
+            startPoint: String(data.get("startPoint") || "").trim(),
+            distance: Number(data.get("distance")),
+            technicalDifficulty: Number(data.get("technicalDifficulty")),
+            exposure: Number(data.get("exposure")),
+            condition: Number(data.get("condition")),
+            mapUrl: mapUrl || null
+        };
+        fetch("/api/trails", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+        })
+            .then(function (response) {
+                if (!response.ok) {
+                    throw new Error("invalid");
+                }
+                return response.json();
+            })
+            .then(function (trail) {
+                location.href = "/trails/" + trail.id;
+            })
+            .catch(function () {
+                error.hidden = false;
+            });
+    });
+</script>
+</body>
+</html>

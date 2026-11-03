@@ -22,13 +22,17 @@ public class Trail  {
     }
 
     public Trail(String name, String startPoint, Double distance, double technicalDifficulty, double exposure, double condition) {
+        this(name, startPoint, distance, technicalDifficulty, exposure, condition, null);
+    }
+
+    public Trail(String name, String startPoint, Double distance, double technicalDifficulty, double exposure, double condition, String mapUrl) {
         this.name = name;
         this.startPoint = startPoint;
         this.distance = distance;
         this.technicalDifficulty = technicalDifficulty;
         this.exposure = exposure;
         this.condition = condition;
-
+        this.mapUrl = mapUrl;
     }
 
     public Long getId() {

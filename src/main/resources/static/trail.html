@@ -46,6 +46,7 @@
                 <p class="trail-level">${level(trail.technicalDifficulty)}</p>
                 <h1>${escapeHtml(trail.name)}</h1>
                 <p class="trail-start">Start: ${escapeHtml(trail.startPoint)}</p>
+                <button id="delete-trail" class="delete-trail" type="button">Usuń szlak</button>
             </header>
             <dl class="facts">
                 <div><dt>Ekspozycja</dt><dd>${formatNumber(trail.exposure)} / 5</dd></div>
@@ -86,6 +87,23 @@
                 </div>
             </div>
         `;
+        document.querySelector("#delete-trail").addEventListener("click", deleteTrail);
+    }
+
+    function deleteTrail() {
+        if (!window.confirm("Usunąć ten szlak razem z jego cruxami?")) {
+            return;
+        }
+        fetch("/api/trails/" + id, { method: "DELETE" })
+            .then(function (response) {
+                if (!response.ok) {
+                    throw new Error("failed");
+                }
+                location.href = "/trails";
+            })
+            .catch(function () {
+                window.alert("Nie udało się usunąć szlaku.");
+            });
     }
 
     function cruxList(cruxes) {
