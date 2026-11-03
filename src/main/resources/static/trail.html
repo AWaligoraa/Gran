@@ -46,7 +46,7 @@
                 <p class="trail-level">${level(trail.technicalDifficulty)}</p>
                 <h1>${escapeHtml(trail.name)}</h1>
                 <p class="trail-start">Start: ${escapeHtml(trail.startPoint)}</p>
-                <button id="delete-trail" class="delete-trail" type="button">Usuń szlak</button>
+                <p class="actions"><a class="edit-trail" href="/trails/${trail.id}/edit">Edytuj szlak</a><button id="delete-trail" class="delete-trail" type="button">Usuń szlak</button></p>
             </header>
             <dl class="facts">
                 <div><dt>Ekspozycja</dt><dd>${formatNumber(trail.exposure)} / 5</dd></div>
