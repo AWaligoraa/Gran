@@ -20,6 +20,11 @@ public class TrailPageController {
 		return "forward:/add.html";
 	}
 
+	@GetMapping("/trails/{id}/edit")
+	public String editTrail() {
+		return "forward:/edit.html";
+	}
+
 	@GetMapping("/trails/{id}")
 	public String trail() {
 		return "forward:/trail.html";

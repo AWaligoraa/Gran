@@ -167,8 +167,13 @@ button:hover {
     background: #143528;
 }
 
+.loading,
 .error {
     margin: 0 0 14px;
+    color: #5c6762;
+}
+
+.error {
     color: #8a3b2b;
 }
 

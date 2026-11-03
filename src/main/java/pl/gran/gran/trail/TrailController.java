@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -61,6 +62,25 @@ public class TrailController {
                 request.exposure(),
                 request.condition(),
                 mapUrl));
+    }
+
+    @PutMapping("/api/trails/{id}")
+    public Trail update(@PathVariable Long id, @Valid @RequestBody NewTrail request) {
+        Trail trail = trailRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        String mapUrl = request.mapUrl();
+        if (mapUrl != null && mapUrl.isBlank()) {
+            mapUrl = null;
+        }
+        trail.update(
+                request.name(),
+                request.startPoint(),
+                request.distance(),
+                request.technicalDifficulty(),
+                request.exposure(),
+                request.condition(),
+                mapUrl);
+        return trailRepository.save(trail);
     }
 
     @DeleteMapping("/api/trails/{id}")
