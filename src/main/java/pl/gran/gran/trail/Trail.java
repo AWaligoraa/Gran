@@ -66,4 +66,14 @@ public class Trail  {
     public String getMapUrl() {
         return mapUrl;
     }
+
+    public void update(String name, String startPoint, Double distance, double technicalDifficulty, double exposure, double condition, String mapUrl) {
+        this.name = name;
+        this.startPoint = startPoint;
+        this.distance = distance;
+        this.technicalDifficulty = technicalDifficulty;
+        this.exposure = exposure;
+        this.condition = condition;
+        this.mapUrl = mapUrl;
+    }
 }

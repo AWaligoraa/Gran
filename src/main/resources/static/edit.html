@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Edytuj szlak — Grań</title>
+    <link rel="stylesheet" href="/add.css">
+</head>
+<body>
+<header class="top">
+    <a class="brand" href="/">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18 L9 8 L13 13 L16 9 L21 18 Z"/></svg>
+        Grań
+    </a>
+    <nav>
+        <a href="/trails">Szlaki</a>
+        <a href="/#warstwy">O aplikacji</a>
+    </nav>
+</header>
+<main>
+    <p class="crumb"><a href="/trails">Szlaki</a> / <a id="back" href="/trails">Szlak</a> / Edycja</p>
+    <h1>Edytuj szlak</h1>
+    <form id="trail-form">
+        <p class="loading">Wczytywanie szlaku…</p>
+        <label>
+            Nazwa
+            <input name="name" required maxlength="200">
+        </label>
+        <label>
+            Start
+            <input name="startPoint" required maxlength="200">
+        </label>
+        <div class="grid">
+            <label>
+                Dystans (km)
+                <input name="distance" type="number" required min="0" max="50" step="0.5">
+            </label>
+            <label>
+                Trudność techniczna
+                <input name="technicalDifficulty" type="number" required min="1" max="5" step="0.5">
+            </label>
+            <label>
+                Ekspozycja
+                <input name="exposure" type="number" required min="1" max="5" step="0.5">
+            </label>
+            <label>
+                Kondycja
+                <input name="condition" type="number" required min="1" max="5" step="0.5">
+            </label>
+        </div>
+        <label>
+            Link do mapy
+            <input name="mapUrl" type="url" maxlength="300" placeholder="https://mapa-turystyczna.pl/route/...">
+        </label>
+        <p id="form-error" class="error" hidden>Nie udało się zapisać zmian. Sprawdź pola: skale od 1 do 5, dystans od 0 do 50.</p>
+        <button type="submit">Zapisz zmiany</button>
+    </form>
+</main>
+<script>
+    const form = document.querySelector("#trail-form");
+    const error = document.querySelector("#form-error");
+    const back = document.querySelector("#back");
+    const id = location.pathname.split("/").filter(Boolean)[1];
+
+    fetch("/api/trails/" + id)
+        .then(function (response) {
+            if (!response.ok) {
+                throw new Error("missing");
+            }
+            return response.json();
+        })
+        .then(function (trail) {
+            document.title = "Edytuj: " + trail.name;
+            back.href = "/trails/" + trail.id;
+            back.textContent = trail.name;
+            form.elements.name.value = trail.name;
+            form.elements.startPoint.value = trail.startPoint;
+            form.elements.distance.value = trail.distance;
+            form.elements.technicalDifficulty.value = trail.technicalDifficulty;
+            form.elements.exposure.value = trail.exposure;
+            form.elements.condition.value = trail.condition;
+            form.elements.mapUrl.value = trail.mapUrl || "";
+            form.querySelector(".loading").remove();
+        })
+        .catch(function () {
+            form.innerHTML = '<p class="error">Nie ma szlaku o tym numerze.</p>';
+        });
+
+    form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        error.hidden = true;
+        const data = new FormData(form);
+        const mapUrl = String(data.get("mapUrl") || "").trim();
+        fetch("/api/trails/" + id, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                name: String(data.get("name") || "").trim(),
+                startPoint: String(data.get("startPoint") || "").trim(),
+                distance: Number(data.get("distance")),
+                technicalDifficulty: Number(data.get("technicalDifficulty")),
+                exposure: Number(data.get("exposure")),
+                condition: Number(data.get("condition")),
+                mapUrl: mapUrl || null
+            })
+        })
+            .then(function (response) {
+                if (!response.ok) {
+                    throw new Error("invalid");
+                }
+                location.href = "/trails/" + id;
+            })
+            .catch(function () {
+                error.hidden = false;
+            });
+    });
+</script>
+</body>
+</html>

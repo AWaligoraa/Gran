@@ -69,15 +69,12 @@ function render(trails) {
 function trailCard(trail) {
     return `
         <article class="trail-card">
-            <div class="trail-photo" aria-hidden="true">
-                <svg viewBox="0 0 640 220" preserveAspectRatio="xMidYMax slice">
-                    <rect width="640" height="220" fill="#d5e0da"/>
-                    <path d="M0 150 L100 80 L170 120 L260 48 L350 118 L440 70 L530 130 L640 78 L640 220 L0 220 Z" fill="#315246"/>
-                    <path d="M0 180 L140 140 L250 175 L380 128 L500 168 L640 140 L640 220 L0 220 Z" fill="#1d332b"/>
-                </svg>
+            <div class="trail-photo">
+                <img src="${trailPhoto(trail.id)}" alt="">
+                <span class="badge level">${level(trail.technicalDifficulty)}</span>
+                <span class="badge exposure">Ekspozycja ${formatNumber(trail.exposure)}/5</span>
             </div>
             <div class="trail-body">
-                <p class="trail-level">${level(trail.technicalDifficulty)}</p>
                 <h3><a href="/trails/${trail.id}">${escapeHtml(trail.name)}</a></h3>
                 <p class="trail-start">Start: ${escapeHtml(trail.startPoint)}</p>
                 <dl>
