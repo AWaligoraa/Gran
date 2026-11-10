@@ -23,7 +23,10 @@
         <div class="hero-copy">
             <h1>Znajdź szlak, który naprawdę dasz radę przejść</h1>
             <p>Porównaj ekspozycję, trudność i kondycję. Przy trudnym odcinku zobaczysz przejście, a ze szlaku przejdziesz do mapy.</p>
-            <a class="button" href="/trails">Przeglądaj szlaki</a>
+            <div class="hero-actions">
+                <a class="button" href="/trails">Przeglądaj szlaki</a>
+                <a class="button ghost" href="/trails">Filtruj po trudności</a>
+            </div>
             <dl class="hero-stats">
                 <div><dd id="stat-km">…</dd><dt>Kilometrów szlaków</dt></div>
                 <div><dd id="stat-trails">…</dd><dt>Szlaków w katalogu</dt></div>
@@ -31,19 +34,7 @@
             </dl>
         </div>
         <figure class="hero-visual">
-            <svg viewBox="0 0 640 460" role="img" aria-label="Grań Tatr">
-                <defs>
-                    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0" stop-color="#7f97a8"/>
-                        <stop offset="0.55" stop-color="#c5d0cb"/>
-                        <stop offset="1" stop-color="#e7efe8"/>
-                    </linearGradient>
-                </defs>
-                <rect width="640" height="460" fill="url(#sky)"/>
-                <path d="M0 300 L70 250 L120 270 L190 180 L250 230 L320 120 L390 210 L460 150 L530 220 L640 160 L640 460 L0 460 Z" fill="#315246"/>
-                <path d="M0 340 L90 300 L180 330 L270 250 L360 310 L450 270 L540 320 L640 280 L640 460 L0 460 Z" fill="#1d332b"/>
-                <path d="M0 400 L140 370 L260 390 L400 350 L520 380 L640 360 L640 460 L0 460 Z" fill="#12211c"/>
-            </svg>
+            <img src="/images/hero.jpg" alt="Tatry">
             <figcaption>Grań Tatr Wysokich</figcaption>
         </figure>
     </section>
@@ -126,6 +117,7 @@
     <span>Szlaki w polskich Tatrach</span>
 </footer>
 
+<script src="/photos.js?v=5"></script>
 <script>
     const grid = document.querySelector("#trail-grid");
 
@@ -178,15 +170,11 @@
         grid.innerHTML = trails.map(function (trail) {
             return `
                 <article class="trail-card">
-                    <div class="trail-photo" aria-hidden="true">
-                        <svg viewBox="0 0 640 280" preserveAspectRatio="xMidYMax slice">
-                            <rect width="640" height="280" fill="#d5e0da"/>
-                            <path d="M0 190 L100 110 L170 150 L260 70 L350 140 L440 90 L530 160 L640 100 L640 280 L0 280 Z" fill="#315246"/>
-                            <path d="M0 230 L150 180 L260 210 L390 160 L510 200 L640 170 L640 280 L0 280 Z" fill="#1d332b"/>
-                        </svg>
+                    <div class="trail-photo">
+                        <img src="${trailPhoto(trail.id)}" alt="">
+                        <span class="badge">${level(trail.technicalDifficulty)}</span>
                     </div>
                     <div class="trail-body">
-                        <p class="trail-level">${level(trail.technicalDifficulty)}</p>
                         <h3>${escapeHtml(trail.name)}</h3>
                         <p class="trail-start">Start: ${escapeHtml(trail.startPoint)}</p>
                         <dl>
