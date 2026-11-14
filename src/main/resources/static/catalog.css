@@ -52,6 +52,11 @@ a {
     font-size: 0.95rem;
 }
 
+.top nav .auth-user {
+    color: #5c6762;
+    font-size: 0.9rem;
+}
+
 .top nav a[aria-current="page"] {
     color: #1b4332;
     font-weight: 700;

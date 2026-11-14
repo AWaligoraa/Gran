@@ -12,9 +12,10 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18 L9 8 L13 13 L16 9 L21 18 Z"/></svg>
         Grań
     </a>
-    <nav>
+    <nav data-auth-nav>
         <a href="/trails">Szlaki</a>
-        <a href="/#warstwy">O aplikacji</a>
+        <a href="/login">Zaloguj</a>
+        <a href="/register">Rejestracja</a>
     </nav>
 </header>
 <main>
@@ -23,30 +24,38 @@
         <p class="empty">Wczytywanie szlaku…</p>
     </article>
 </main>
+<script src="/auth.js"></script>
 <script>
     const card = document.querySelector("#card");
     const crumbName = document.querySelector("#crumb-name");
     const id = location.pathname.split("/").filter(Boolean).pop();
 
-    fetch("/api/trails/" + id)
-        .then(function (response) {
+    Promise.all([
+        fetch("/api/trails/" + id).then(function (response) {
             if (!response.ok) {
                 throw new Error("missing");
             }
             return response.json();
+        }),
+        window.GranAuth.ready
+    ])
+        .then(function (results) {
+            showTrail(results[0]);
         })
-        .then(showTrail)
         .catch(showMissing);
 
     function showTrail(trail) {
         document.title = trail.name;
         crumbName.textContent = trail.name;
+        const adminActions = window.GranAuth.isAdmin()
+            ? `<p class="actions"><a class="edit-trail" href="/trails/${trail.id}/edit">Edytuj szlak</a><button id="delete-trail" class="delete-trail" type="button">Usuń szlak</button></p>`
+            : "";
         card.innerHTML = `
             <header class="trail-head">
                 <p class="trail-level">${level(trail.technicalDifficulty)}</p>
                 <h1>${escapeHtml(trail.name)}</h1>
                 <p class="trail-start">Start: ${escapeHtml(trail.startPoint)}</p>
-                <p class="actions"><a class="edit-trail" href="/trails/${trail.id}/edit">Edytuj szlak</a><button id="delete-trail" class="delete-trail" type="button">Usuń szlak</button></p>
+                ${adminActions}
             </header>
             <dl class="facts">
                 <div><dt>Ekspozycja</dt><dd>${formatNumber(trail.exposure)} / 5</dd></div>
@@ -87,7 +96,10 @@
                 </div>
             </div>
         `;
-        document.querySelector("#delete-trail").addEventListener("click", deleteTrail);
+        const deleteButton = document.querySelector("#delete-trail");
+        if (deleteButton) {
+            deleteButton.addEventListener("click", deleteTrail);
+        }
     }
 
     function deleteTrail() {
