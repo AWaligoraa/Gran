@@ -53,6 +53,11 @@ a {
     font-size: 0.95rem;
 }
 
+.top nav .auth-user {
+    color: #5c6762;
+    font-size: 0.9rem;
+}
+
 .top nav a:hover {
     text-decoration: underline;
 }

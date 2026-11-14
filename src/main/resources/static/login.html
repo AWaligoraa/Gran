@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Logowanie — Grań</title>
+    <link rel="stylesheet" href="/auth.css">
+</head>
+<body>
+<header class="top">
+    <a class="brand" href="/">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18 L9 8 L13 13 L16 9 L21 18 Z"/></svg>
+        Grań
+    </a>
+    <nav>
+        <a href="/trails">Szlaki</a>
+        <a href="/register">Rejestracja</a>
+    </nav>
+</header>
+<main>
+    <h1>Zaloguj się</h1>
+    <p class="lead">Admin zarządza szlakami. Zwykły użytkownik tylko przegląda katalog.</p>
+    <form method="post" action="/login">
+        <p id="error" class="error" hidden>Błędny e-mail albo hasło.</p>
+        <label>
+            E-mail
+            <input name="username" type="email" required autocomplete="username" placeholder="admin@gran.pl">
+        </label>
+        <label>
+            Hasło
+            <input name="password" type="password" required autocomplete="current-password">
+        </label>
+        <button type="submit">Zaloguj</button>
+    </form>
+    <p class="hint">Nie masz konta? <a href="/register">Zarejestruj się</a></p>
+    <p class="hint">Demo: admin@gran.pl / admin123 · user@gran.pl / user123</p>
+</main>
+<script>
+    if (new URLSearchParams(location.search).has("error")) {
+        document.querySelector("#error").hidden = false;
+    }
+</script>
+</body>
+</html>

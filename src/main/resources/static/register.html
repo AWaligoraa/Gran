@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Rejestracja — Grań</title>
+    <link rel="stylesheet" href="/auth.css">
+</head>
+<body>
+<header class="top">
+    <a class="brand" href="/">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18 L9 8 L13 13 L16 9 L21 18 Z"/></svg>
+        Grań
+    </a>
+    <nav>
+        <a href="/trails">Szlaki</a>
+        <a href="/login">Zaloguj</a>
+    </nav>
+</header>
+<main>
+    <h1>Załóż konto</h1>
+    <p class="lead">Nowe konto dostaje rolę użytkownika. Dodawanie szlaków zostaje dla admina.</p>
+    <form id="register-form">
+        <p id="error" class="error" hidden></p>
+        <label>
+            E-mail
+            <input name="email" type="email" required maxlength="200" autocomplete="username">
+        </label>
+        <label>
+            Hasło
+            <input name="password" type="password" required minlength="6" maxlength="72" autocomplete="new-password">
+        </label>
+        <button type="submit">Zarejestruj</button>
+    </form>
+    <p class="hint">Masz już konto? <a href="/login">Zaloguj się</a></p>
+</main>
+<script>
+    const form = document.querySelector("#register-form");
+    const error = document.querySelector("#error");
+    form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        error.hidden = true;
+        const data = new FormData(form);
+        fetch("/api/auth/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                email: String(data.get("email") || "").trim(),
+                password: String(data.get("password") || "")
+            })
+        })
+            .then(function (response) {
+                if (response.status === 409) {
+                    throw new Error("Ten e-mail jest już zajęty.");
+                }
+                if (!response.ok) {
+                    throw new Error("Nie udało się założyć konta. Hasło min. 6 znaków.");
+                }
+                location.href = "/login";
+            })
+            .catch(function (err) {
+                error.textContent = err.message;
+                error.hidden = false;
+            });
+    });
+</script>
+</body>
+</html>

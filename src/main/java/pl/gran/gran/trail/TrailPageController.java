@@ -11,6 +11,16 @@ public class TrailPageController {
 		return "forward:/home.html";
 	}
 
+	@GetMapping("/login")
+	public String login() {
+		return "forward:/login.html";
+	}
+
+	@GetMapping("/register")
+	public String register() {
+		return "forward:/register.html";
+	}
+
 	@GetMapping({"/trails", "/trails/"})
 	public String page() {
 		return "forward:/index.html";
