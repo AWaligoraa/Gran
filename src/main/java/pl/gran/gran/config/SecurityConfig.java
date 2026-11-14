@@ -10,7 +10,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -70,10 +72,20 @@ public class SecurityConfig {
 						.logoutUrl("/logout")
 						.logoutSuccessUrl("/")
 						.permitAll())
-				.exceptionHandling(ex -> ex
-						.defaultAuthenticationEntryPointFor(
-								new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED),
-								PathPatternRequestMatcher.withDefaults().matcher("/api/**")));
+				.exceptionHandling(ex -> {
+					RequestMatcher api = PathPatternRequestMatcher.withDefaults().matcher("/api/**");
+					LoginUrlAuthenticationEntryPoint login =
+							new LoginUrlAuthenticationEntryPoint("/login");
+					HttpStatusEntryPoint unauthorized =
+							new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED);
+					ex.authenticationEntryPoint((request, response, authException) -> {
+						if (api.matches(request)) {
+							unauthorized.commence(request, response, authException);
+						} else {
+							login.commence(request, response, authException);
+						}
+					});
+				});
 		return http.build();
 	}
 }
