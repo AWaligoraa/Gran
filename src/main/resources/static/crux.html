@@ -24,20 +24,24 @@
         <p class="empty">Wczytywanie cruxa…</p>
     </article>
 </main>
+<script src="/auth.js"></script>
 <script>
     const card = document.querySelector("#card");
     const crumbName = document.querySelector("#crumb-name");
     const back = document.querySelector("#back");
     const cruxId = location.pathname.split("/").filter(Boolean).pop();
 
-    fetch("/api/cruxes/" + cruxId)
-        .then(function (response) {
+    Promise.all([
+        fetch("/api/cruxes/" + cruxId).then(function (response) {
             if (!response.ok) {
                 throw new Error("missing");
             }
             return response.json();
-        })
-        .then(function (crux) {
+        }),
+        window.GranAuth.ready
+    ])
+        .then(function (results) {
+            const crux = results[0];
             return fetch("/api/trails/" + crux.trail.id)
                 .then(function (response) {
                     return response.ok ? response.json() : { cruxes: [] };
@@ -54,6 +58,12 @@
         back.href = "/trails/" + crux.trail.id;
         back.textContent = crux.trail.name;
         const neighbors = findNeighbors(cruxes, crux.id);
+        const adminActions = window.GranAuth.isAdmin()
+            ? `<p class="actions">
+                <a class="edit-trail" href="/trails/${crux.trail.id}">Edytuj na stronie szlaku</a>
+                <button id="delete-crux" class="delete-trail" type="button">Usuń crux</button>
+               </p>`
+            : "";
         card.innerHTML = `
             <div class="photo" aria-hidden="true">
                 <svg viewBox="0 0 640 280" preserveAspectRatio="xMidYMax slice">
@@ -66,6 +76,7 @@
             <p class="eyebrow">Odcinek ${crux.position}</p>
             <h1>${escapeHtml(crux.name)}</h1>
             <p class="where">Na szlaku ${escapeHtml(crux.trail.name)}</p>
+            ${adminActions}
             <p class="description">${escapeHtml(crux.description)}</p>
             ${videoHtml(crux.youtubeId)}
             <div class="neighbors">
@@ -73,6 +84,27 @@
                 ${neighborLink(neighbors.next, "Następny crux", false)}
             </div>
         `;
+        const deleteButton = document.querySelector("#delete-crux");
+        if (deleteButton) {
+            deleteButton.addEventListener("click", function () {
+                if (!window.confirm("Usunąć ten crux?")) {
+                    return;
+                }
+                fetch("/api/cruxes/" + cruxId, {
+                    method: "DELETE",
+                    credentials: "same-origin"
+                })
+                    .then(function (response) {
+                        if (!response.ok) {
+                            throw new Error("failed");
+                        }
+                        location.href = "/trails/" + crux.trail.id;
+                    })
+                    .catch(function () {
+                        window.alert("Nie udało się usunąć cruxa.");
+                    });
+            });
+        }
     }
 
     function findNeighbors(cruxes, id) {
@@ -118,6 +150,5 @@
             .replaceAll('"', "&quot;");
     }
 </script>
-<script src="/auth.js"></script>
 </body>
 </html>

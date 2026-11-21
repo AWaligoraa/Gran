@@ -72,6 +72,7 @@
                     <section>
                         <h2>Cruxy</h2>
                         ${cruxList(trail.cruxes)}
+                        ${window.GranAuth.isAdmin() ? cruxAdminForm() : ""}
                     </section>
                 </div>
                 <div class="column">
@@ -100,6 +101,7 @@
         if (deleteButton) {
             deleteButton.addEventListener("click", deleteTrail);
         }
+        bindCruxAdmin(trail);
     }
 
     function deleteTrail() {
@@ -122,14 +124,149 @@
         if (!cruxes || cruxes.length === 0) {
             return '<p class="muted">Brak opisanych cruxów.</p>';
         }
+        const admin = window.GranAuth.isAdmin();
         return `<ol class="crux-list">${cruxes.map(function (crux) {
+            const actions = admin
+                ? `<p class="crux-actions">
+                    <button type="button" class="crux-edit" data-crux-id="${crux.id}">Edytuj</button>
+                    <button type="button" class="crux-delete" data-crux-id="${crux.id}">Usuń</button>
+                   </p>`
+                : "";
             return `
-                <li>
+                <li data-crux-item="${crux.id}">
                     <a href="/cruxes/${crux.id}">${escapeHtml(crux.name)}</a>
                     <p>${escapeHtml(crux.description)}</p>
+                    ${actions}
                 </li>
             `;
         }).join("")}</ol>`;
+    }
+
+    function cruxAdminForm() {
+        return `
+            <form id="crux-form" class="crux-form">
+                <h3 id="crux-form-title">Dodaj crux</h3>
+                <p id="crux-form-error" class="error" hidden>Nie udało się zapisać cruxa.</p>
+                <input type="hidden" name="cruxId" value="">
+                <label>
+                    Nazwa
+                    <input name="name" required maxlength="200" placeholder="np. Kozi Wierch">
+                </label>
+                <label>
+                    Kolejność
+                    <input name="position" type="number" min="1" step="1" placeholder="puste = na końcu">
+                </label>
+                <label>
+                    Opis
+                    <textarea name="description" required maxlength="1000" rows="3" placeholder="Co jest trudne na tym odcinku"></textarea>
+                </label>
+                <label>
+                    YouTube ID
+                    <input name="youtubeId" maxlength="20" placeholder="np. dQw4w9WgXcQ">
+                </label>
+                <div class="crux-form-actions">
+                    <button type="submit">Zapisz crux</button>
+                    <button type="button" id="crux-cancel" class="ghost" hidden>Anuluj edycję</button>
+                </div>
+            </form>
+        `;
+    }
+
+    function bindCruxAdmin(trail) {
+        if (!window.GranAuth.isAdmin()) {
+            return;
+        }
+        const form = document.querySelector("#crux-form");
+        const error = document.querySelector("#crux-form-error");
+        const title = document.querySelector("#crux-form-title");
+        const cancel = document.querySelector("#crux-cancel");
+        const cruxById = {};
+        (trail.cruxes || []).forEach(function (crux) {
+            cruxById[String(crux.id)] = crux;
+        });
+
+        function resetForm() {
+            form.reset();
+            form.cruxId.value = "";
+            title.textContent = "Dodaj crux";
+            cancel.hidden = true;
+            error.hidden = true;
+        }
+
+        form.addEventListener("submit", function (event) {
+            event.preventDefault();
+            error.hidden = true;
+            const data = new FormData(form);
+            const cruxId = String(data.get("cruxId") || "").trim();
+            const positionRaw = String(data.get("position") || "").trim();
+            const body = {
+                name: String(data.get("name") || "").trim(),
+                description: String(data.get("description") || "").trim(),
+                youtubeId: String(data.get("youtubeId") || "").trim() || null,
+                position: positionRaw ? Number(positionRaw) : null
+            };
+            const creating = !cruxId;
+            const url = creating
+                ? "/api/trails/" + id + "/cruxes"
+                : "/api/cruxes/" + cruxId;
+            fetch(url, {
+                method: creating ? "POST" : "PUT",
+                headers: { "Content-Type": "application/json" },
+                credentials: "same-origin",
+                body: JSON.stringify(body)
+            })
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw new Error("failed");
+                    }
+                    location.reload();
+                })
+                .catch(function () {
+                    error.hidden = false;
+                });
+        });
+
+        cancel.addEventListener("click", resetForm);
+
+        document.querySelectorAll(".crux-edit").forEach(function (button) {
+            button.addEventListener("click", function () {
+                const crux = cruxById[button.getAttribute("data-crux-id")];
+                if (!crux) {
+                    return;
+                }
+                form.cruxId.value = crux.id;
+                form.name.value = crux.name;
+                form.position.value = crux.position;
+                form.description.value = crux.description;
+                form.youtubeId.value = crux.youtubeId || "";
+                title.textContent = "Edytuj crux";
+                cancel.hidden = false;
+                form.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            });
+        });
+
+        document.querySelectorAll(".crux-delete").forEach(function (button) {
+            button.addEventListener("click", function () {
+                const cruxId = button.getAttribute("data-crux-id");
+                const crux = cruxById[cruxId];
+                if (!window.confirm("Usunąć crux „" + (crux ? crux.name : cruxId) + "”?")) {
+                    return;
+                }
+                fetch("/api/cruxes/" + cruxId, {
+                    method: "DELETE",
+                    credentials: "same-origin"
+                })
+                    .then(function (response) {
+                        if (!response.ok) {
+                            throw new Error("failed");
+                        }
+                        location.reload();
+                    })
+                    .catch(function () {
+                        window.alert("Nie udało się usunąć cruxa.");
+                    });
+            });
+        });
     }
 
     function mapLink(url) {

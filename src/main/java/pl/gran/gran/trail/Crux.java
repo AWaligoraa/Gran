@@ -31,6 +31,14 @@ public class Crux {
     protected Crux() {
     }
 
+    public Crux(Trail trail, String name, int position, String description, String youtubeId) {
+        this.trail = trail;
+        this.name = name;
+        this.position = position;
+        this.description = description;
+        this.youtubeId = blankToNull(youtubeId);
+    }
+
     public Long getId() {
         return id;
     }
@@ -43,7 +51,7 @@ public class Crux {
         return name;
     }
 
-    public String getYoutubeId(){
+    public String getYoutubeId() {
         return youtubeId;
     }
 
@@ -53,6 +61,20 @@ public class Crux {
 
     public String getDescription() {
         return description;
+    }
+
+    public void update(String name, int position, String description, String youtubeId) {
+        this.name = name;
+        this.position = position;
+        this.description = description;
+        this.youtubeId = blankToNull(youtubeId);
+    }
+
+    private static String blankToNull(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+        return value.trim();
     }
 
 }
