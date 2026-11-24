@@ -71,6 +71,9 @@ Schemat i seed idą przez Flyway (`src/main/resources/db/migration`):
 - `V3` — `youtube_id`
 - `V4`–`V5` — `map_url`
 - `V6` — `app_user` (role `USER` / `ADMIN`)
+- `V7` — kolejne szlaki i warianty od parkingu (dystans w dwie strony)
+
+Dystans w katalogu to **w dwie strony** (lub pętla) od parkingu / Kuźnic, nie sam odcinek docelowy.
 
 Nie edytuj już zastosowanych migracji — dodawaj kolejne `Vn`.
 
