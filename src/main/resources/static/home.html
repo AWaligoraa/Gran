@@ -29,7 +29,7 @@
                 <a class="button ghost" href="/trails">Filtruj po trudności</a>
             </div>
             <dl class="hero-stats">
-                <div><dd id="stat-km">…</dd><dt>Kilometrów szlaków</dt></div>
+                <div><dd id="stat-km">…</dd><dt>Kilometrów szlaków (w dwie strony)</dt></div>
                 <div><dd id="stat-trails">…</dd><dt>Szlaków w katalogu</dt></div>
                 <div><dd id="stat-cruxes">…</dd><dt>Opisanych cruxów</dt></div>
             </dl>
@@ -118,7 +118,7 @@
     <span>Szlaki w polskich Tatrach</span>
 </footer>
 
-<script src="/photos.js?v=5"></script>
+<script src="/photos.js?v=7"></script>
 <script>
     const grid = document.querySelector("#trail-grid");
 
@@ -179,7 +179,7 @@
                         <h3>${escapeHtml(trail.name)}</h3>
                         <p class="trail-start">Start: ${escapeHtml(trail.startPoint)}</p>
                         <dl>
-                            <div><dt>Dystans</dt><dd>${formatNumber(trail.distance)} km</dd></div>
+                            <div><dt>Dystans (w dwie strony)</dt><dd>${formatNumber(trail.distance)} km</dd></div>
                             <div><dt>Technika</dt><dd>${formatNumber(trail.technicalDifficulty)} / 5</dd></div>
                             <div><dt>Ekspozycja</dt><dd>${formatNumber(trail.exposure)} / 5</dd></div>
                         </dl>

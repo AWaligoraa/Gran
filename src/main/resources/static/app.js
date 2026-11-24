@@ -78,7 +78,7 @@ function trailCard(trail) {
                 <h3><a href="/trails/${trail.id}">${escapeHtml(trail.name)}</a></h3>
                 <p class="trail-start">Start: ${escapeHtml(trail.startPoint)}</p>
                 <dl>
-                    <div><dt>Dystans</dt><dd>${formatNumber(trail.distance)} km</dd></div>
+                    <div><dt>Dystans (w dwie strony)</dt><dd>${formatNumber(trail.distance)} km</dd></div>
                     <div><dt>Technika</dt><dd>${formatNumber(trail.technicalDifficulty)} / 5</dd></div>
                     <div><dt>Ekspozycja</dt><dd>${formatNumber(trail.exposure)} / 5</dd></div>
                     <div><dt>Kondycja</dt><dd>${formatNumber(trail.condition)} / 5</dd></div>
